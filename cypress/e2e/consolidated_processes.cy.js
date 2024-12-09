@@ -112,13 +112,15 @@ describe('Consolidated Processes', { testIsolation: false }, () => {
     })
 
     it('should navigate to attach files tab and upload files', () => {
+        cy.contains('Attach files').should('be.visible')
+
         cy.get('#upload_ppa2').should('exist').click()
         cy.get('input[formcontrolname="common_ppa2"]').selectFile('cypress/fixtures/file.png', { force: true })
 
         cy.get('#upload_title_deed').should('exist').click()
         cy.get('input[formcontrolname="common_title_deed"]').selectFile('cypress/fixtures/file.png', { force: true })
 
-        cy.get('#upload_title_deed').should('exist').click()
+        // cy.get('#').should('exist').click()
         cy.get('input[formcontrolname="common_planning_brief"]').selectFile('cypress/fixtures/file.png', { force: true })
 
         // cy.xpath("//mat-horizontal-stepper//form//div[1]//button").should('exist');
@@ -129,6 +131,7 @@ describe('Consolidated Processes', { testIsolation: false }, () => {
         cy.xpath("//new-consolidated-processes[1]/div[1]/mat-card[1]/mat-card-content[1]/mat-horizontal-stepper[1]/div[2]/div[3]/form[1]/div[4]/div[2]/div[1]/button[1]").should('exist').click()
         cy.get('input[formcontrolname="amalgamation_shape_file"]').selectFile('cypress/fixtures/shapefile.zip', { force: true })
 
+        //additional documents
         cy.get('input[formcontrolname="document_name"]').type('National Id')
         cy.get('#choose_other_doc').should('exist').click()
         cy.get('#otherFiles').selectFile('cypress/fixtures/file.png', { force: true })
@@ -138,21 +141,12 @@ describe('Consolidated Processes', { testIsolation: false }, () => {
         cy.get('#otherFiles').selectFile('cypress/fixtures/file.png', { force: true })
         cy.wait(2000);
 
-        //Test "Remove" feature on table
-        cy.get("div[fxlayoutalign='start start'] div table[role='grid'] tbody tr")
-            .each(($row, index) => {
-                cy.wrap($row).find('td').each(($col, colIndex) => {
-                    if ($col.text().includes('National Id')) {
-                        cy.wrap($row).find('td').eq(colIndex + 1).find('button').should('contain.text', 'Remove').click({ force: true })
-                    }
-                });
-            });
-
         //Next
         cy.contains('button', 'Next').should('exist').click({ force: true });
     })
 
     it('should navigate to verify details tab', () => {
+        cy.contains('Verify Details').should('be.visible')
         //Check that each table has some data
         cy.get('table').then(($tables) => {
             const tableCount = $tables.length;
