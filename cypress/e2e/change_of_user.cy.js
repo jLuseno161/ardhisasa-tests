@@ -31,7 +31,7 @@ describe('Change of User', { testIsolation: false }, () => {
     })
 
     it('should navigate to application details tab and fill application data', () => {
-        //Processes data
+        //Process data
         cy.contains('Application details').should('be.visible')
 
         cy.get('[formcontrolname="application_type"]').click();
@@ -46,7 +46,8 @@ describe('Change of User', { testIsolation: false }, () => {
             .should('be.visible')
             .click();
 
-        cy.get('[formcontrolname="parcel_number"]').type('NAIROBI/BLOCK111/1079')
+        // cy.get('[formcontrolname="parcel_number"]').type('NAIROBI/BLOCK111/1079')
+        cy.get('[formcontrolname="parcel_number"]').type('NAIROBI/BLOCK153/58')
         cy.get('input[formcontrolname="ppa2_reference_number"]').type('PLUPA 12345')
         cy.get('textarea[formcontrolname="land_status"]').type('In Use');
         cy.get('textarea[formcontrolname="additional_information"]').type('None');
@@ -126,7 +127,7 @@ describe('Change of User', { testIsolation: false }, () => {
             });
         });
 
-        //Submit
+        //Submit application
         cy.contains('button', 'Submit').should('exist').click({ force: true });
     })
 
@@ -146,7 +147,6 @@ describe('Change of User', { testIsolation: false }, () => {
         //Resubmit application
         cy.contains('button', 'Submit').should('exist').click({ force: true });
 
-        // Verify the "Yes" button exists and is clickable
         cy.get('mat-dialog-container')
             .find('button.continue-button')
             .should('be.visible')
@@ -155,9 +155,10 @@ describe('Change of User', { testIsolation: false }, () => {
 
         //intercept post request
         cy.intercept('POST', ' http://192.168.214.184/sharedservice/api/v1/file-upload/upload').as('createApplication')
-        cy.wait('@createApplication')
-        cy.wait(4000);
+        cy.wait('@createApplication', { timeout: 60000 })
 
+
+        cy.wait(5000);
         cy.get('.swal2-content')
             .should('exist')
             .invoke('text')
@@ -174,16 +175,56 @@ describe('Change of User', { testIsolation: false }, () => {
     })
 
     it('should authorize development control application development control', () => {
+        cy.wait(2000);
+
+        cy.contains('.mat-tab-label-content', 'Application Details').click()
         cy.contains('button', 'Get OTP').click()
-
-        cy.get('input.search_input').type('123456')
+        // cy.get('input.search_input').type('123456')
+        cy.pause()
         cy.contains('button', 'Verify').click()
+
+        cy.wait(2000);
+        cy.get('.swal2-content')
+            .should('exist')
+            .invoke('text')
+            .then((text) => {
+                expect(text.trim()).to.include('OTP Successfully verified!');
+            });
+
+        cy.xpath("//button[normalize-space()='Close']").should('be.visible').click()
     })
 
-    it('should view uploaded documents', () => {
-        cy.contains('Documents').click()
+    // it('should view uploaded documents', () => {
+    //     cy.contains('Documents').click()
+    // })
+
+    // it('should cancel submission', () => { })
+
+    it('should submit request', () => {
+        cy.contains('button', 'Submit Request').click()
+
+        cy.get('mat-dialog-container')
+            .should('be.visible')
+            .find('.mat-dialog-content')
+            .should('contain', 'Are you sure?')
+            .and('contain', 'Are you sure you want to submit the request?');
+
+        cy.get('mat-dialog-container')
+            .find('button.continue-button')
+            .should('be.visible')
+            .and('contain', 'Yes')
+            .click();
     })
 
-    it('should cancel submission', () => { })
+    it('verify submission', () => {
+        cy.wait(2000);
+        cy.get('.swal2-content')
+            .should('exist')
+            .invoke('text')
+            .then((text) => {
+                expect(text.trim()).to.include('Request processed successfully');
+            });
 
+        cy.xpath("//button[normalize-space()='Close']").should('be.visible').click()
+    })
 })
