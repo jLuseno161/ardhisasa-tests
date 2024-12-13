@@ -11,7 +11,7 @@ describe('Land Rent Process', { testIsolation: false }, () => {
         cy.get('.greetings').should('contain', 'Hi Monicah, welcome');
     });
 
-    describe('Pay Land rent single invoice', () => {
+    describe('Pay land rent single invoice', () => {
         it('should navigate to land rent section', () => {
             cy.contains('Land Rent').should('be.visible').click();
             cy.url().should('include', 'user/MoLPP/land-admin/land-rent/applications');
@@ -73,7 +73,7 @@ describe('Land Rent Process', { testIsolation: false }, () => {
         });
     });
 
-    describe('Pay Land rent multiple invoices', () => {
+    describe('Pay land rent multiple invoices', () => {
         it('should navigate to land rent section', () => {
             cy.visit('user/MoLPP/land-admin/land-rent/pay-land-rent?parcel_number=')
         });

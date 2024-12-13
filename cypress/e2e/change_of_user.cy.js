@@ -31,7 +31,6 @@ describe('Change of User', { testIsolation: false }, () => {
     })
 
     it('should navigate to application details tab and fill application data', () => {
-        //Process data
         cy.contains('Application details').should('be.visible')
 
         cy.get('[formcontrolname="application_type"]').click();
@@ -169,13 +168,9 @@ describe('Change of User', { testIsolation: false }, () => {
         cy.xpath("//button[normalize-space()='Close']").should('be.visible').click()
     });
 
-    it('should show application progress level', () => {
+    it('should show application progress level and authorize development control application', () => {
         cy.wait(2000);
         cy.contains('Progress level: Application received, awaiting payment confirmation').should('be.visible')
-    })
-
-    it('should authorize development control application development control', () => {
-        cy.wait(2000);
 
         cy.contains('.mat-tab-label-content', 'Application Details').click()
         cy.contains('button', 'Get OTP').click()
